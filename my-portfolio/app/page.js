@@ -22,16 +22,8 @@ async function getData() {
 };
 
 export default async function Home() {
-  let articles = [];
-  try {
-    const res = await fetch(`https://dev.to/api/articles?username=${personalData.devUsername}`, { cache: 'no-store' });
-    if (res.ok) {
-      const data = await res.json();
-      articles = data.filter((item) => item?.cover_image).sort(() => Math.random() - 0.5);
-    }
-  } catch (error) {
-    console.error("Failed to fetch articles:", error);
-  }
+  
+
   return (
     <div suppressHydrationWarning >
       <HeroSection />
