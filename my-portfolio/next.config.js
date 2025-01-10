@@ -1,5 +1,9 @@
 const path = require('path')
- 
+module.exports = {
+  reactStrictMode: true,
+  trailingSlash: false, // Ensure routes don't expect .html files
+};
+
 module.exports = {
   sassOptions: {
     includePaths: [path.join(__dirname, 'styles')],
