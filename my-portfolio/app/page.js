@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { personalData } from "@/utils/data/personal-data";
 import AboutSection from "./components/homepage/about";
 import ContactSection from "./components/homepage/contact";
@@ -7,32 +8,44 @@ import HeroSection from "./components/homepage/hero-section";
 import Projects from "./components/homepage/projects";
 import Skills from "./components/homepage/skills";
 
-async function getData() {
-  const res = await fetch(`https://dev.to/api/articles?username=${personalData.devUsername}`)
+export default function Home() {
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  if (!res.ok) {
-    throw new Error('Failed to fetch data')
+  useEffect(() => {
+    async function getData() {
+      const res = await fetch(`https://dev.to/api/articles?username=${personalData.devUsername}`);
+
+      if (!res.ok) {
+        throw new Error('Failed to fetch data');
+      }
+
+      const data = await res.json();
+      const filtered = data.filter((item) => item?.cover_image).sort(() => Math.random() - 0.5);
+
+      setArticles(filtered);
+      setLoading(false);
+    }
+
+    getData().catch((error) => {
+      console.error("Error fetching data:", error);
+      setLoading(false);
+    });
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
   }
 
-  const data = await res.json();
-
-  const filtered = data.filter((item) => item?.cover_image).sort(() => Math.random() - 0.5);
-
-  return filtered;
-};
-
-export default async function Home() {
-  
-
   return (
-    <div suppressHydrationWarning >
+    <div suppressHydrationWarning>
       <HeroSection />
       <AboutSection />
       <Experience />
       <Skills />
-      <Projects />
+      <Projects articles={articles} />
       <Education />
       <ContactSection />
     </div>
-  )
-};
+  );
+}
